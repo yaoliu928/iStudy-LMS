@@ -1,10 +1,11 @@
 const express = require('express');
-const v1Router = require('./routes')
+const v1Router = require('./routes');
+const config = require('./config');
 
 const app = express();
 
 app.use('/v1', v1Router);
 
-app.listen(3000, () => {
-  console.log('Server listen on port 3000')
+app.listen(config.PORT, () => {
+  console.log('Server is listening on port ${config.PORT}.')
 });
