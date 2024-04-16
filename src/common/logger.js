@@ -26,4 +26,3 @@ const getLogger = (filename) => {
 }
 
 module.exports = getLogger;
-

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 require('dotenv').config();
 
 const optionalConfig = {
@@ -14,9 +15,9 @@ for (const key in requiredConfig) {
   if (requiredConfig[key] == null) {
     throw new Error(`Missing value for ${key}`);
   }
-}
+};
 
 module.exports = {
   ...optionalConfig,
   ...requiredConfig
-}
+};
