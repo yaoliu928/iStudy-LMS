@@ -4,7 +4,7 @@ const logger = getLogger(__filename);
 
 const getAllStudents = (req, res) => {
   logger.info('find all students');
-  res.json([]);
+  res.formatResponse([], 400);
 };
 const getStudentById = (req, res) => {
 
