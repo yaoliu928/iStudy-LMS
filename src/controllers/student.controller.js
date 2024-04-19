@@ -1,24 +1,21 @@
 const getLogger = require('../common/logger');
+const Student = require('../models/student.model');
 
-const logger = getLogger(__filename);
-
-const getAllStudents = (req, res) => {
-  logger.info('find all students');
-  // res.formatResponse([], 400);
-  throw new Error('error');
+const getAllStudents = async (req, res) => {
+  // TODO: add pagination
+  const students = await Student.find().exec();
+  res.formatResponse(students);
 };
-const getStudentById = (req, res) => {
 
+const addStudent = async (req, res) => {
+  const { firstName, lastName, email } = req.body;
+  const student = await Student.create({ firstName, lastName, email });
+  res.formatResponse(student, 201);
 };
-const deleteStudentById = (req, res) => {
 
-};
-const updateStudentById = (req, res) => {
-
-};
-const addStudent = (req, res) => {
-
-};
+const getStudentById = (req, res) => { };
+const updateStudentById = (req, res) => { };
+const deleteStudentById = (req, res) => { };
 
 module.exports = {
   getAllStudents,

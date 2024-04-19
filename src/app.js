@@ -8,13 +8,18 @@ const morgan = require('./common/morgan');
 const formatResponseMiddleware = require('./middleware/formatResponse.middleware');
 const notFoundMiddleware = require('./middleware/notFound.middleware');
 const unknownErrorMiddleware = require('./middleware/errorMiddleware/unknownError.middleware');
+const connectToDb = require('./common/utils/db');
 
 const logger = getLogger(__filename);
 
 const app = express();
 
 app.use(helmet());
+
 app.use(cors());
+
+app.use(express.json());
+
 app.use(formatResponseMiddleware);
 
 app.use(morgan);
@@ -25,6 +30,10 @@ app.use(notFoundMiddleware);
 
 app.use(unknownErrorMiddleware);
 
-app.listen(config.PORT, () => {
-  logger.info(`Server is listening on port ${config.PORT}.`);
-});
+connectToDb().then(
+  () => {
+    app.listen(config.PORT, () => {
+      logger.info(`Server is listening on port ${config.PORT}.`);
+    });
+  }
+);
