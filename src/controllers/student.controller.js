@@ -1,4 +1,3 @@
-const getLogger = require('../common/logger');
 const Student = require('../models/student.model');
 
 const getAllStudents = async (req, res) => {
@@ -13,9 +12,36 @@ const addStudent = async (req, res) => {
   res.formatResponse(student, 201);
 };
 
-const getStudentById = (req, res) => { };
-const updateStudentById = (req, res) => { };
-const deleteStudentById = (req, res) => { };
+const getStudentById = async (req, res) => {
+  const { id } = req.params;
+  const student = await Student.findById(id).exec();
+  if (!student) {
+    return res.formatResponse(`Student not found: ${id}`, 404);
+  }
+  res.formatResponse(student);
+};
+
+const updateStudentById = async (req, res) => {
+  const { id } = req.params;
+  const { firstName, lastName, email } = req.body;
+  const student = await Student.findByIdAndUpdate(
+    id,
+    { firstName, lastName, email },
+    { new: true, }).exec();
+  if (!student) {
+    return res.formatResponse(`Student not found: ${id}`, 404);
+  }
+  res.formatResponse(student);
+};
+
+const deleteStudentById = async (req, res) => {
+  const { id } = req.params;
+  const student = await Student.findByIdAndDelete(id).exec();
+  if (!student) {
+    return res.formatResponse(`Student not found: ${id}`, 404);
+  };
+  res.formatResponse('', 204);
+};
 
 module.exports = {
   getAllStudents,
