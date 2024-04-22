@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const Joi = require('joi');
 
 const studentSchema = new Schema({
   firstName: {
@@ -9,6 +10,12 @@ const studentSchema = new Schema({
   },
   email: {
     type: String,
+    validate: [{
+      validator: (email) => {
+        return Joi.string().email().validate(email).error === undefined;
+      },
+      msg: 'Invalid email format'
+    }]
   },
 },
   {
