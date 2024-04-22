@@ -10,7 +10,7 @@ const studentRouter = Router();
 studentRouter.get('/', getAllStudents);
 studentRouter.post('/', addStudent);
 studentRouter.get('/:id', getStudentById);
-studentRouter.delete('/', deleteStudentById);
-studentRouter.patch('/', updateStudentById);
+studentRouter.delete('/:id', deleteStudentById);
+studentRouter.patch('/:id', updateStudentById);
 
 module.exports = studentRouter;
