@@ -9,6 +9,7 @@ const formatResponseMiddleware = require('./middleware/formatResponse.middleware
 const notFoundMiddleware = require('./middleware/notFound.middleware');
 const unknownErrorMiddleware = require('./middleware/errorMiddleware/unknownError.middleware');
 const connectToDb = require('./common/utils/db');
+const validationErrorMiddleware = require('./middleware/errorMiddleware/validationError.middleware');
 
 const logger = getLogger(__filename);
 
@@ -28,6 +29,7 @@ app.use('/v1', v1Router);
 
 app.use(notFoundMiddleware);
 
+app.use(validationErrorMiddleware);
 app.use(unknownErrorMiddleware);
 
 connectToDb().then(
