@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "debug": "nodemon --inspect src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/app.js",
-    "debug": "nodemon --inspect src/app.js"
+    "dev": "nodemon src/app.js"
   },
   "keywords": [],
   "author": "",
