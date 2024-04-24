@@ -2,6 +2,7 @@ const Course = require('../models/course.model');
 const getLogger = require('../common/logger');
 const NotFoundException = require('../common/exceptions/notFound.exception');
 const addCourseSchema = require('../validations/addCourseSchema');
+const updateCourseSchema = require('../validations/updateCourseSchema');
 
 const logger = getLogger(__filename);
 
@@ -47,10 +48,13 @@ const getCourseById = async (req, res, next) => {
 const updateCourseById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { name, code, description } = req.body;
+    const validBody = await updateCourseSchema.validateAsync(req.body, {
+      allowUnknown: true,
+      stripUnknown: true,
+    });
     const course = await Course.findByIdAndUpdate(
       id,
-      { name, code, description },
+      validBody,
       { new: true, }).exec();
     if (!course) {
       throw new NotFoundException(`Course not found: ${id}`);

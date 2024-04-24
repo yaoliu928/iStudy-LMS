@@ -1,5 +1,7 @@
 const Student = require('../models/student.model');
 const getLogger = require('../common/logger');
+const addStudentSchema = require('../validations/addStudentSchema');
+const updateStudentSchema = require('../validations/updateStudentSchema');
 
 const logger = getLogger(__filename);
 
@@ -16,8 +18,11 @@ const getAllStudents = async (req, res, next) => {
 
 const addStudent = async (req, res, next) => {
   try {
-    const { firstName, lastName, email } = req.body;
-    const student = await Student.create({ firstName, lastName, email });
+    const validBody = await addStudentSchema.validateAsync(req.body, {
+      allowUnknown: true,
+      stripUnknown: true,
+    });
+    const student = await Student.create(validBody);
     res.formatResponse(student, 201);
   } catch (e) {
     logger.info(e.message);
@@ -42,10 +47,13 @@ const getStudentById = async (req, res, next) => {
 const updateStudentById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { firstName, lastName, email } = req.body;
+    const validBody = await updateStudentSchema.validateAsync(req.body, {
+      allowUnknown: true,
+      stripUnknown: true,
+    });
     const student = await Student.findByIdAndUpdate(
       id,
-      { firstName, lastName, email },
+      validBody,
       { new: true, }).exec();
     if (!student) {
       return res.formatResponse(`Student not found: ${id}`, 404);
