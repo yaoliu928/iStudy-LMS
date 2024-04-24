@@ -1,6 +1,7 @@
 const Course = require('../models/course.model');
 const getLogger = require('../common/logger');
 const NotFoundException = require('../common/exceptions/notFound.exception');
+const addCourseSchema = require('../validations/addCourseSchema');
 
 const logger = getLogger(__filename);
 
@@ -17,8 +18,11 @@ const getAllCourses = async (req, res, next) => {
 
 const addCourse = async (req, res, next) => {
   try {
-    const { name, code, description } = req.body;
-    const course = await Course.create({ name, code, description });
+    const validBody = await addCourseSchema.validateAsync(req.body, {
+      allowUnknown: true,
+      stripUnknown: true,
+    });
+    const course = await Course.create(validBody);
     res.formatResponse(course, 201);
   } catch (e) {
     logger.info(e.message);
