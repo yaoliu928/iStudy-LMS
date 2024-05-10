@@ -2,6 +2,8 @@ const Student = require('../models/student.model');
 const getLogger = require('../common/logger');
 const addStudentSchema = require('../validations/addStudentSchema');
 const updateStudentSchema = require('../validations/updateStudentSchema');
+const Course = require('../models/course.model');
+const NotFoundException = require('../common/exceptions/notFound.exception');
 
 const logger = getLogger(__filename);
 
@@ -35,8 +37,8 @@ const getStudentById = async (req, res, next) => {
     const { id } = req.params;
     const student = await Student.findById(id).exec();
     if (!student) {
-      return res.formatResponse(`Student not found: ${id}`, 404);
-    }
+      throw new NotFoundException(`Student not found: ${id}`);
+    };
     res.formatResponse(student);
   } catch (e) {
     logger.info(e.message);
@@ -56,8 +58,8 @@ const updateStudentById = async (req, res, next) => {
       validBody,
       { new: true, }).exec();
     if (!student) {
-      return res.formatResponse(`Student not found: ${id}`, 404);
-    }
+      throw new NotFoundException(`Student not found: ${id}`);
+    };
     res.formatResponse(student);
   } catch (e) {
     logger.info(e.message);
@@ -70,8 +72,8 @@ const deleteStudentById = async (req, res, next) => {
     const { id } = req.params;
     const student = await Student.findByIdAndDelete(id).exec();
     if (!student) {
-      return res.formatResponse(`Student not found: ${id}`, 404);
-    }
+      throw new NotFoundException(`Student not found: ${id}`);
+    };
     res.formatResponse('', 204);
   } catch (e) {
     logger.info(e.message);
@@ -79,10 +81,32 @@ const deleteStudentById = async (req, res, next) => {
   }
 };
 
+const addStudentToCourse = async (req, res, next) => {
+  try {
+    const { studentId, courseId } = req.params;
+    const student = await Student.findById(studentId).exec();
+    const course = await Course.findById(courseId).exec();
+    if (!student) {
+      throw new NotFoundException(`Student not found: ${studentId}`);
+    };
+    if (!course) {
+      throw new NotFoundException(`Course not found: ${courseId}`);
+    };
+    student.courses.addToSet(courseId);
+    course.students.addToSet(studentId);
+    await student.save();
+    await course.save();
+  } catch (e) {
+    logger.info(e.message);
+    next(e);
+  }
+}
+
 module.exports = {
   getAllStudents,
   addStudent,
   getStudentById,
   deleteStudentById,
-  updateStudentById
+  updateStudentById,
+  addStudentToCourse
 };

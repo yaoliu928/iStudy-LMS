@@ -13,6 +13,12 @@ const courseSchema = new Schema({
     type: String,
     default: 'default description',
   },
+  students: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Student'
+    }
+  ]
 },
   {
     timestamps: true,

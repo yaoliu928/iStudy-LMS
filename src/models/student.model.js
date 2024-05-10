@@ -20,6 +20,12 @@ const studentSchema = new Schema({
       msg: 'Invalid email format'
     }]
   },
+  courses: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Course'
+    }
+  ]
 },
   {
     timestamps: true,
