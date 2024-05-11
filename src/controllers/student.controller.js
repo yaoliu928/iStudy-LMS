@@ -9,8 +9,10 @@ const logger = getLogger(__filename);
 
 const getAllStudents = async (req, res, next) => {
   try {
-    // TODO: add pagination
-    const students = await Student.find().exec();
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 10;
+    const skip = (page - 1) * pageSize;
+    const students = await Student.find().limit(pageSize).skip(skip).exec();
     res.formatResponse(students);
   } catch (e) {
     logger.info(e.message);
