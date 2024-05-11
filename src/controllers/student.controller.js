@@ -74,6 +74,11 @@ const deleteStudentById = async (req, res, next) => {
     if (!student) {
       throw new NotFoundException(`Student not found: ${id}`);
     };
+    await Course.updateMany({ students: student._id }, {
+      $pull: {
+        students: { $in: [student._id] }
+      }
+    }).exec();
     res.formatResponse('', 204);
   } catch (e) {
     logger.info(e.message);
@@ -81,6 +86,7 @@ const deleteStudentById = async (req, res, next) => {
   }
 };
 
+// POST /v1/students/:studentId/courses/:courseId
 const addStudentToCourse = async (req, res, next) => {
   try {
     const { studentId, courseId } = req.params;
@@ -96,6 +102,30 @@ const addStudentToCourse = async (req, res, next) => {
     course.students.addToSet(studentId);
     await student.save();
     await course.save();
+    res.formatResponse(student);
+  } catch (e) {
+    logger.info(e.message);
+    next(e);
+  }
+}
+
+// DELETE /v1/students/:studentId/courses/:courseId
+const deleteStudentFromCourse = async (req, res, next) => {
+  try {
+    const { studentId, courseId } = req.params;
+    const student = await Student.findById(studentId).exec();
+    const course = await Course.findById(courseId).exec();
+    if (!student) {
+      throw new NotFoundException(`Student not found: ${studentId}`);
+    };
+    if (!course) {
+      throw new NotFoundException(`Course not found: ${courseId}`);
+    };
+    student.courses.pull(courseId);
+    course.students.pull(studentId);
+    await student.save();
+    await course.save();
+    res.formatResponse(undefined, 204);
   } catch (e) {
     logger.info(e.message);
     next(e);
@@ -108,5 +138,6 @@ module.exports = {
   getStudentById,
   deleteStudentById,
   updateStudentById,
-  addStudentToCourse
+  addStudentToCourse,
+  deleteStudentFromCourse
 };

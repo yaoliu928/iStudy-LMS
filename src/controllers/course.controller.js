@@ -3,6 +3,7 @@ const getLogger = require('../common/logger');
 const NotFoundException = require('../common/exceptions/notFound.exception');
 const addCourseSchema = require('../validations/addCourseSchema');
 const updateCourseSchema = require('../validations/updateCourseSchema');
+const Student = require('../models/student.model');
 
 const logger = getLogger(__filename);
 
@@ -34,7 +35,11 @@ const addCourse = async (req, res, next) => {
 const getCourseById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const course = await Course.findById(id).exec();
+    const course = await Course.findById(id).populate('students', {
+      firstName: true,
+      lastName: true,
+      email: true
+    }).exec();
     if (!course) {
       throw new NotFoundException(`Course not found: ${id}`);
     }
@@ -73,6 +78,11 @@ const deleteCourseById = async (req, res, next) => {
     if (!course) {
       throw new NotFoundException(`Course not found: ${id}`);
     };
+    await Student.updateMany({ courses: course._id }, {
+      $pull: {
+        courses: course._id
+      }
+    }).exec();
     res.formatResponse('', 204);
   } catch (e) {
     logger.info(e.message);
