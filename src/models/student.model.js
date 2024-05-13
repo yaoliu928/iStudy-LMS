@@ -1,13 +1,9 @@
 const { Schema, model } = require('mongoose');
-<<<<<<< HEAD
 const Joi = require('joi');
-=======
->>>>>>> master
 
 const studentSchema = new Schema({
   firstName: {
     type: String,
-<<<<<<< HEAD
     required: true,
   },
   lastName: {
@@ -38,16 +34,6 @@ const studentSchema = new Schema({
     }
   }
 );
-=======
-  },
-  lastName: {
-    type: String,
-  },
-  email: {
-    type: String,
-  },
-});
->>>>>>> master
 
 const Student = model('Student', studentSchema);
 
