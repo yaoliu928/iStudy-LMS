@@ -12,4 +12,11 @@ const schema = new Schema({
   },
 });
 
+schema.set('toJSON', {
+  transform: function (doc, ret) {
+    delete ret.password;
+    return ret;
+  },
+});
+
 module.exports = model('User', schema);

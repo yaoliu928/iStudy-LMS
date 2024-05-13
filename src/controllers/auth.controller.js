@@ -10,9 +10,9 @@ const register = async (req, res) => {
     return;
   }
   const hashedPassword = await bcrypt.hash(password, 12);
-  await User.create({ username, password: hashedPassword });
+  const user = await User.create({ username, password: hashedPassword });
 
-  res.formatResponse({ username }, 201);
+  res.formatResponse(user, 201);
 };
 
 const login = async (req, res) => {
@@ -28,7 +28,7 @@ const login = async (req, res) => {
     res.formatResponse(`Incorrect username and password`, 401);
     return;
   }
-  res.formatResponse({ username });
+  res.formatResponse(user);
 };
 
 module.exports = {
