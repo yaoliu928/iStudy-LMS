@@ -20,6 +20,6 @@ module.exports = (req, res, next) => {
     res.formatResponse('Invalid token', 401);
     return;
   }
-  req.user = payload;
+
   next();
-};
+}

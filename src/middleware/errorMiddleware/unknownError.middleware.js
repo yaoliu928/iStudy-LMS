@@ -3,7 +3,7 @@ const getLogger = require('../../common/logger');
 
 const logger = getLogger(__filename);
 
-module.exports = (error, req, res) => {
+module.exports = (error, req, res, next) => {
   logger.error(`${error.message}\n stack: ${error.stack}`);
 
   res.formatResponse(

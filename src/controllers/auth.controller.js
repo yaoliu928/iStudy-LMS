@@ -7,7 +7,7 @@ const logger = getLogger(__filename);
 
 const register = async (req, res, next) => {
   try {
-    const { username, password, role } = req.body;
+    const { username, password } = req.body;
     const existedUser = await User.findOne({ username }).exec();
     if (existedUser) {
       // 409 Conflicts
@@ -15,7 +15,7 @@ const register = async (req, res, next) => {
       return;
     }
     const hashedPassword = await bcrypt.hash(password, 12);
-    const user = await User.create({ username, password: hashedPassword, role });
+    const user = await User.create({ username, password: hashedPassword });
 
     res.formatResponse(user, 201);
   } catch (e) {
@@ -38,7 +38,7 @@ const login = async (req, res, next) => {
       res.formatResponse(`Incorrect username and password`, 401);
       return;
     }
-    const token = generateToken({ sub: user.id, username: user.username, role: user.role });
+    const token = generateToken({ sub: user.id, username: user.username });
     res.formatResponse({ username, token });
   } catch (e) {
     logger.info(e.message);
