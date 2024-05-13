@@ -7,8 +7,12 @@ const optionalConfig = {
 };
 
 const requiredConfig = {
+<<<<<<< HEAD
   DB_CONNECTION_STRING: process.env.DB_CONNECTION_STRING,
   JWT_SECRET: process.env.JWT_SECRET
+=======
+  DB_CONNECTION_STRING: process.env.DB_CONNECTION_STRING
+>>>>>>> master
 };
 
 for (const key in requiredConfig) {
