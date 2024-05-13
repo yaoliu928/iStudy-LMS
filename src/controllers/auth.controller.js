@@ -1,4 +1,5 @@
 const User = require('../models/user.model');
+const bcrypt = require('bcrypt');
 
 const register = async (req, res) => {
   const { username, password } = req.body;
@@ -8,8 +9,10 @@ const register = async (req, res) => {
     res.formatResponse(`${username} already exists`, 409);
     return;
   }
-  const user = await User.create({ username, password });
-  res.formatResponse(user, 201);
+  const hashedPassword = await bcrypt.hash(password, 12);
+  await User.create({ username, password: hashedPassword });
+
+  res.formatResponse({ username }, 201);
 };
 
 const login = async (req, res) => {
@@ -20,12 +23,12 @@ const login = async (req, res) => {
     res.formatResponse(`Incorrect username and password`, 401);
     return;
   }
-  if (user.password !== password) {
+  if (!(await bcrypt.compare(password, user.password))) {
     // 401 Unauthorized
     res.formatResponse(`Incorrect username and password`, 401);
     return;
   }
-  res.formatResponse(user);
+  res.formatResponse({ username });
 };
 
 module.exports = {
