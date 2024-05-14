@@ -23,7 +23,6 @@ describe("authentication guard middleware", () => {
     // compare
     expect(res.formatResponse).toHaveBeenCalledWith('Missing authorization token', 401)
   }),
-
     it("should call next function when token is valid", () => {
       const req = {
         header: jest.fn(),
